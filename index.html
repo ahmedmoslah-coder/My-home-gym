@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#14241f">
+<meta name="description" content="Mon programme Upper Lower Push Pull à domicile">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>My Home Gym</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#17261f;background:#f4f7f5}
+*{box-sizing:border-box}body{margin:0}
+header{background:#14241f;color:#fff;padding:25px 17px 21px}
+header h1{margin:4px 0;font-size:27px}header p{margin:0;color:#d0ded5}
+.wrap{max-width:740px;margin:auto;padding:14px}
+button{font:inherit;cursor:pointer}
+nav{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.day{border:1px solid #d4ddd6;background:white;padding:12px 3px;border-radius:12px;font-weight:650;font-size:13px}
+.day span{font-weight:400;color:#627167;font-size:11px;display:block}.day.active{background:#176848;color:white}.day.active span{color:#e0f4e8}
+.tabs{display:flex;background:#e5ece7;border-radius:12px;padding:4px;gap:4px}.tab{flex:1;padding:11px 6px;background:transparent;border:0;border-radius:9px}.tab.active{background:white;font-weight:700;box-shadow:0 1px 4px #0001}
+.card{background:white;border:1px solid #e0e8e2;border-radius:15px;padding:14px;margin-top:12px}.card h2{font-size:19px;margin:0 0 6px}.muted{color:#607168;font-size:13px}
+h3{font-size:16px;margin:12px 0 8px}
+.exercise{display:flex;align-items:center;width:100%;text-align:left;gap:11px;background:white;border:1px solid #e0e8e2;border-radius:12px;padding:13px 10px;margin-top:7px}.exercise.active{border:2px solid #176848;background:#f1f8f4}
+.num{flex:none;display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#e8f0ea;font-weight:800}.details{flex:1;min-width:0}.details strong{display:block;font-size:14px}.details small{display:block;color:#65736a;margin-top:3px}.arrow{font-size:20px;color:#577062}
+.photo{display:block;width:100%;max-height:350px;object-fit:contain;background:#e9eee9;border-radius:10px;margin-top:10px}
+.pill{display:inline-block;background:#dcefe3;color:#155338;border-radius:99px;font-size:12px;padding:4px 10px;font-weight:750}.big{font-size:26px;font-weight:800;margin:8px 0}
+.primary,.secondary{border-radius:11px;padding:12px 15px;font-weight:700;border:0}.primary{background:#176848;color:white}.secondary{background:#e5ece7;color:#223c2d}.full{width:100%}
+.row{display:flex;gap:8px;align-items:center;justify-content:space-between}.row>button{flex:1}label{display:block;color:#52665a;font-size:13px;margin:10px 0 5px}input{font:inherit;border:1px solid #ceddd2;border-radius:9px;padding:10px;width:100%}
+.cardio-item{background:white;border:1px solid #e0e8e2;border-radius:14px;padding:12px;margin-top:12px}.cardio-item h3{margin:0 0 3px}.cardio-item p{margin:4px 0 0}
+.demo{display:block;width:100%;max-height:320px;background:#edf1ee;border-radius:10px;margin-top:10px}
+.note{margin-top:8px;padding:9px 11px;background:#eef5f0;border-radius:10px;color:#3b5b49;font-size:12px}
+footer{text-align:center;font-size:11px;color:#738177;margin:24px 0}
+a{color:#176848}
+@media(min-width:630px){.wrap{padding:22px}.day{font-size:15px}}
+</style>
+</head>
+<body>
+<header><div style="max-width:740px;margin:auto"><div style="font-size:12px;letter-spacing:.13em;color:#a5ddb9">MON HOME GYM</div><h1>Mon programme 💪</h1><p>4 séances / semaine · 15 min cardio + 45 min musculation</p></div></header>
+<main class="wrap">
+  <nav id="days" aria-label="Séances"></nav>
+  <div class="tabs"><button class="tab active" data-tab="muscu">🏋️ Musculation</button><button class="tab" data-tab="cardio">❤️ Cardio</button></div>
+  <div id="app"></div>
+  <footer>Les démonstrations cardio ci-dessous sont extraites directement de tes deux vidéos. Les mini-clips se lancent automatiquement et tournent en boucle. Touche une vidéo pour pause/reprise.</footer>
+</main>
+<script>
+const IMG='https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/';
+const E=(name,reps,muscle,tip,img)=>({name,reps,muscle,tip,img});
+const C=(name,duration,video,tip,source)=>({name,duration,video,tip,source});
+const sessions=[
+{day:'Lundi',name:'Upper',focus:'Haut du corps',format:'40 s travail · 20 s repos · 5 exercices · 3 tours',cardio:[
+C('Corde à sauter','40 s travail · 20 s repos',null,'Saute à un rythme régulier avec de petits rebonds et les épaules relâchées.',null),
+C('Montées de genoux','40 s travail · 20 s repos','./b01.mp4','Monte les genoux rapidement en gardant le buste droit.','Vidéo séparée 10'),
+C('Skater touch','40 s travail · 20 s repos','./b02.mp4','Déplace-toi latéralement en gardant les appuis dynamiques.','Vidéo séparée 11'),
+C('Squats rapides','40 s travail · 20 s repos','./b03.mp4','Descends et remonte rapidement avec contrôle.','Vidéo séparée 12'),
+C('Crunch debout genou-coude','40 s travail · 20 s repos','./b04.mp4','Ramène le genou vers les mains en gardant le tronc gainé.','Vidéo séparée 13')
+],ex:[
+E('Développé couché avec haltères','3 × 8–12','Pectoraux','Serre les omoplates et descends de façon contrôlée.','Dumbbell_Bench_Press'),
+E('Tirage vertical à la machine','3 × 8–12','Dos','Tire vers le haut de la poitrine sans balancer le buste.','Wide-Grip_Lat_Pulldown'),
+E('Développé Arnold','2 × 10–12','Épaules','Tourne progressivement les mains en poussant.','Arnold_Dumbbell_Press'),
+E('Rowing horizontal à la poulie basse','3 × 10–12','Dos','Ramène la poignée vers l’abdomen.','Seated_Cable_Rows'),
+E('Curl biceps avec haltères','2 × 10–15','Biceps','Conserve les coudes près du corps.','Dumbbell_Bicep_Curl'),
+E('Extension triceps à la poulie haute','2 × 10–15','Triceps','Garde les coudes immobiles.','Triceps_Pushdown')
+]},
+{day:'Mardi',name:'Lower',focus:'Jambes et abdominaux',format:'40 s travail · 20 s repos · 5 exercices · 3 tours',cardio:[
+C('Front kicks','40 s travail · 20 s repos','./a01.mp4','Alterne les coups de pied vers l’avant avec contrôle.','Vidéo séparée 1'),
+C('Squats au poids du corps','40 s travail · 20 s repos','./a02.mp4','Descends en gardant les genoux alignés avec les pieds.','Vidéo séparée 2'),
+C('Prisoner squats','40 s travail · 20 s repos','./a05.mp4','Mains près de la tête, garde le dos neutre.','Vidéo séparée 5'),
+C('Montées de genoux','40 s travail · 20 s repos','./a06.mp4','Monte les genoux de façon rythmée.','Vidéo séparée 6'),
+C('Crab knee drives','40 s travail · 20 s repos','./a08.mp4','En appui arrière, alterne les montées de genoux.','Vidéo séparée 8')
+],ex:[
+E('Goblet squat','3 × 10–12','Quadriceps · Fessiers','Tiens l’haltère devant la poitrine et descends le dos neutre.','Goblet_Squat'),
+E('Soulevé de terre roumain','3 × 8–12','Ischio-jambiers · Fessiers','Pousse les hanches vers l’arrière.','Romanian_Deadlift'),
+E('Fentes bulgares','2 × 10/jambe','Quadriceps · Fessiers','Pied arrière sur le banc, descends en contrôle.','Split_Squat_with_Dumbbells'),
+E('Leg extension à la machine','2 × 12–15','Quadriceps','Étends les jambes sans à-coup.','Leg_Extensions'),
+E('Leg curl au sol avec élastique','2 × 12–15','Ischio-jambiers','Fixe l’élastique en bas et ramène les talons aux fessiers.','Lying_Leg_Curls'),
+E('Mollets debout avec haltères','2 × 15–20','Mollets','Monte sur la pointe des pieds puis redescends lentement.','Standing_Dumbbell_Calf_Raise'),
+E('Gainage abdominal','2 × 30–45 s','Abdominaux','Maintiens le corps aligné.','Plank')
+]},
+{day:'Jeudi',name:'Push',focus:'Pectoraux · Épaules · Triceps',format:'40 s travail · 20 s repos · 5 exercices · 3 tours',cardio:[
+C('Jumping jacks','40 s travail · 20 s repos','./a03.mp4','Ouvre et ferme bras et jambes de façon fluide.','Vidéo séparée 3'),
+C('Talons-fesses','40 s travail · 20 s repos','./a04.mp4','Garde le buste droit et les appuis légers.','Vidéo séparée 4'),
+C('Mountain climbers','40 s travail · 20 s repos','./a07.mp4','En planche, alterne les genoux vers l’avant.','Vidéo séparée 7'),
+C('Quick feet','40 s travail · 20 s repos','./b07.mp4','Petits appuis rapides et buste légèrement penché.','Vidéo séparée 16'),
+C('Squat jumps','40 s travail · 20 s repos','./b08.mp4','Descends en squat puis saute verticalement.','Vidéo séparée 17')
+],ex:[
+E('Développé incliné avec haltères','3 × 8–12','Pectoraux','Banc environ 30°, descends les haltères en contrôle.','Incline_Dumbbell_Press'),
+E('Chest press à la machine','3 × 10–12','Pectoraux','Pousse les poignées devant toi.','Leverage_Chest_Press'),
+E('Développé militaire avec haltères','2 × 8–12','Épaules','Évite de cambrer excessivement.','Dumbbell_Shoulder_Press'),
+E('Élévations latérales','3 × 12–15','Épaules','Lève les bras sans hausser les épaules.','Side_Lateral_Raise'),
+E('Extension triceps à la poulie haute','2 × 10–15','Triceps','Garde les coudes près du corps.','Triceps_Pushdown'),
+E('Extension triceps au-dessus de la tête','2 × 10–12','Triceps','Fléchis puis tends les coudes sans balancer.','Seated_Triceps_Press')
+]},
+{day:'Samedi',name:'Pull',focus:'Dos · Arrière d’épaules · Biceps',format:'40 s travail · 20 s repos · 5 exercices · 3 tours',cardio:[
+C('Corde à sauter','40 s travail · 20 s repos',null,'Saute à un rythme régulier avec de petits rebonds et les épaules relâchées.',null),
+C('Knee drives alternés','40 s travail · 20 s repos','./b06.mp4','Monte alternativement les genoux avec rythme.','Vidéo séparée 15'),
+C('Skaters latéraux','40 s travail · 20 s repos','./b09.mp4','Saute latéralement d’un appui à l’autre.','Vidéo séparée 18'),
+C('Push-ups','40 s travail · 20 s repos','./a09.mp4','Garde le corps aligné pendant les pompes.','Vidéo séparée 9'),
+C('Talons-fesses','40 s travail · 20 s repos','./b05.mp4','Ramène les talons vers les fessiers à rythme rapide.','Vidéo séparée 14')
+],ex:[
+E('Tractions à la barre fixe','3 × 6–10','Dos · Biceps','Utilise un élastique d’assistance au besoin.','Pullups'),
+E('Rowing unilatéral avec haltère','3 × 10–12/bras','Dos','Appuie-toi sur le banc et tire vers la hanche.','One-Arm_Dumbbell_Row'),
+E('Tirage vertical, prise différente','2 × 10–12','Dos','Choisis une prise confortable et différente du lundi.','Close-Grip_Front_Lat_Pulldown'),
+E('Oiseau avec haltères','2 × 12–15','Arrière d’épaules','Buste penché, ouvre les bras en contrôle.','Bent_Over_Dumbbell_Rear_Delt_Raise_With_Head_On_Bench'),
+E('Face pull avec élastique','2 × 12–15','Arrière d’épaules','Tire l’élastique vers le visage, coudes ouverts.','Face_Pull'),
+E('Curl biceps avec barre','2 × 8–12','Biceps','Évite l’élan du buste.','Barbell_Curl'),
+E('Curl marteau avec haltères','2 × 10–12','Biceps · Brachial','Garde les paumes face à face.','Hammer_Curls')
+]}
+];
+const $=x=>document.querySelector(x); let day=0, tab='muscu', sel=0;
+const safeLoad=(k,fallback)=>{try{return JSON.parse(localStorage.getItem(k))??fallback}catch{return fallback}};
+let finished=safeLoad('mhg-finished',{}), loads=safeLoad('mhg-loads',{});
+function save(){localStorage.setItem('mhg-finished',JSON.stringify(finished));localStorage.setItem('mhg-loads',JSON.stringify(loads))}
+const esc=x=>String(x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function draw(){
+  const s=sessions[day];
+  $('#days').innerHTML=sessions.map((x,i)=>`<button class="day ${day===i?'active':''}" data-day="${i}"><span>${x.day}</span>${x.name}</button>`).join('');
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab));
+  if(tab==='cardio'){ drawCardio(); return; }
+  const n=s.ex.filter((_,i)=>finished[day+'-'+i]).length;
+  $('#app').innerHTML=`<div class="card"><h2>${s.day} — ${s.name}</h2><div class="muted">${s.focus} · ${n}/${s.ex.length} exercices terminés</div><div style="height:7px;border-radius:9px;background:#e5eee6;margin-top:11px"><div style="height:7px;border-radius:9px;background:#176848;width:${100*n/s.ex.length}%"></div></div></div><h3>Touche un exercice pour voir sa photo</h3>`+
+    s.ex.map((e,i)=>`<button class="exercise ${sel===i?'active':''}" data-ex="${i}"><span class="num">${finished[day+'-'+i]?'✓':i+1}</span><span class="details"><strong>${esc(e.name)}</strong><small>${e.reps} · ${e.muscle}</small></span><span class="arrow">${sel===i?'⌄':'›'}</span></button>${sel===i?detail(e,i):''}`).join('');
+  let image=$('#ex-photo'); if(image){ image.addEventListener('error',()=>{ image.style.display='none'; $('#image-fallback').style.display='block'; }); }
+}
+function detail(e,i){
+  const k=day+'-'+i;
+  return `<div class="card"><span class="pill">${esc(e.muscle)}</span><h2 style="margin-top:8px">${esc(e.name)}</h2><img id="ex-photo" class="photo" src="${IMG+e.img+'/0.jpg'}" alt="Illustration de ${esc(e.name)}" loading="lazy"><div id="image-fallback" class="note" style="display:none">Image indisponible pour cet exercice.</div><div class="big">${e.reps}</div><p>${esc(e.tip)}</p><label for="load">Charge utilisée (kg), facultatif</label><input id="load" type="number" min="0" step="0.5" inputmode="decimal" value="${esc(loads[k]??'')}" placeholder="Ex. 12"><button style="margin-top:12px" class="primary full" id="finish">${finished[k]?'✓ Terminé — toucher pour annuler':'✓ Marquer comme terminé'}</button><div class="row" style="margin-top:10px"><button class="secondary" id="prev" ${i===0?'disabled':''}>← Précédent</button><button class="secondary" id="next" ${i===sessions[day].ex.length-1?'disabled':''}>Suivant →</button></div></div>`;
+}
+function drawCardio(){
+  const s=sessions[day];
+  $('#app').innerHTML=`<div class="card"><span class="pill">CARDIO · 15 MIN</span><h2 style="margin-top:8px">${s.day} — ${s.name}</h2><p class="muted">${s.format}</p><p style="margin-top:10px">5 exercices · 40 s de travail + 20 s de repos. Répète le circuit 3 fois = 15 minutes.</p></div>`+
+    s.cardio.map((c,i)=>`<div class="cardio-item"><div><span class="pill">Exercice ${i+1}</span><h3>${esc(c.name)}</h3><p class="muted">${esc(c.duration)}</p></div><video class="demo" autoplay playsinline muted loop preload="auto" src="${c.video}" onclick="this.paused?this.play():this.pause()"></video><div class="note">Démo exacte extraite de ${esc(c.source)}.</div><p>${esc(c.tip)}</p></div>`).join('')+
+    `<button class="primary full" id="go-muscu" style="margin-top:15px">Passer à la musculation →</button>`;
+}
+document.addEventListener('click',ev=>{
+  let b=ev.target.closest('button'); if(!b) return;
+  if(b.dataset.day!==undefined){ day=+b.dataset.day; sel=0; draw(); }
+  else if(b.dataset.tab){ tab=b.dataset.tab; draw(); }
+  else if(b.dataset.ex!==undefined){ sel=+b.dataset.ex; draw(); }
+  else if(b.id==='finish'){ let k=day+'-'+sel; finished[k]=!finished[k]; save(); draw(); }
+  else if(b.id==='next'||b.id==='prev'){ sel += b.id==='next'?1:-1; draw(); }
+  else if(b.id==='go-muscu'){ tab='muscu'; draw(); }
+});
+document.addEventListener('change',ev=>{ if(ev.target.id==='load'){ loads[day+'-'+sel]=ev.target.value; save(); } });
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+draw();
+</script>
+</body>
+</html>
